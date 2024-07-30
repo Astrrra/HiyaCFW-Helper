@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # hiyaCFW Helper
-# Version 3.6.10
+# Version 3.6.11
 # Author: mondul <mondul@huyzona.com>
+# Updated by: Astra <me@astrra.space>
 
 from tkinter import (Tk, Frame, LabelFrame, PhotoImage, Button, Entry, Checkbutton, Radiobutton,
     Label, Toplevel, Scrollbar, Text, StringVar, IntVar, RIGHT, W, X, Y, DISABLED, NORMAL, SUNKEN,
