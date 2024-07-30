@@ -262,7 +262,11 @@ class Application(Frame):
 
         frame.pack()
 
-        Button(dialog, text='Close', command=dialog.destroy, width=16).pack(pady=10)
+        if sysname == 'Darwin' and getattr(sys, 'frozen', False):
+            Label(dialog, text='Close').pack(side='top', pady=(10, 0))
+            Button(dialog, text='Close', command=dialog.destroy, width=16).pack(pady=(0, 10))
+        else:
+            Button(dialog, text='Close', command=dialog.destroy, width=16).pack(pady=10)
 
         # Center in window
         dialog.update_idletasks()
@@ -336,7 +340,7 @@ class Application(Frame):
 
             self.log.write('- Extracting hiyaCFW archive...')
 
-            proc = Popen([ _7za, 'x', '-bso0', '-y', filename, 'for PC', 'for SDNAND SD card' ])
+            proc = Popen([ _7zz, 'x', '-bso0', '-y', filename, 'for PC', 'for SDNAND SD card' ])
 
             ret_val = proc.wait()
 
@@ -665,7 +669,11 @@ class Application(Frame):
                 chmod(file, 438)
 
             # Delete current file
-            remove(file)
+            try:
+                remove(file)
+            except:
+                pass
+
 
         # Try to use already downloaded launcher
         try:
@@ -687,7 +695,7 @@ class Application(Frame):
                 else '00000002.app')
 
             # Prepare decryption params
-            params = [ _7za, 'x', '-bso0', '-y', '-p' + app.lower(), self.launcher_region,
+            params = [ _7zz, 'x', '-bso0', '-y', '-p' + app.lower(), self.launcher_region,
                 launcher_app ]
 
             proc = Popen(params)
@@ -757,7 +765,7 @@ class Application(Frame):
 
             self.log.write('- Extracting ' + filename[:-3] + ' archive...')
 
-            proc = Popen([ _7za, 'x', '-bso0', '-y', filename, '-oTWiLight-temp'])
+            proc = Popen([ _7zz, 'x', '-bso0', '-y', filename, '-oTWiLight-temp'])
 
             ret_val = proc.wait()
 
@@ -979,7 +987,7 @@ root = Tk()
 
 scriptPath = path.dirname(path.abspath(argv[0]))
 fatcat = path.join(scriptPath, sysname, 'fatcat')
-_7za = path.join(scriptPath, sysname, '7za')
+_7zz = path.join(scriptPath, sysname, '7zz')
 _7z = None
 
 if sysname == 'Windows':
@@ -994,7 +1002,7 @@ if sysname == 'Windows':
             if not path.exists(_7z):
                 raise WindowsError
 
-            _7za = _7z
+            _7zz = _7z
 
     except WindowsError:
         print('Searching for 7-Zip in the 32-bit Windows registry...')
@@ -1006,12 +1014,12 @@ if sysname == 'Windows':
                 if not path.exists(_7z):
                     raise WindowsError
 
-                _7za = _7z
+                _7zz = _7z
 
         except WindowsError:
             print('7-Zip not found. Will use fatcat for extraction.')
             _7z = None
-            _7za += '.exe'
+            _7zz += '.exe'
 
     fatcat += '.exe'
     twltool = path.join('for PC', 'twltool.exe')
